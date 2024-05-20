@@ -51,6 +51,16 @@ extension ImagesListViewController {
         }
         
         cell.cellImage.image = image
+        
+        let gradientLayer = CAGradientLayer()
+        let gradientHeight = 30.0
+        let marginTopAndBottom = 8.0
+        gradientLayer.frame = CGRect(x: 0, y: cell.frame.height - gradientHeight - marginTopAndBottom, width: cell.cellImage.bounds.width, height: gradientHeight)
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        cell.cellImage.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        cell.cellImage.layer.addSublayer(gradientLayer)
+        
         cell.dateLabel.text = dataFormatter.string(from: Date())
         
         let isLiked = indexPatch.row % 2 == 0
@@ -75,9 +85,3 @@ extension ImagesListViewController: UITableViewDelegate {
         return cellHeight
     }
 }
-
-
-    
-
-
-
