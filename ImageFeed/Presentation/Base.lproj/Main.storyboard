@@ -38,11 +38,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="3Xs-tW-Cxg">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="3Xs-tW-Cxg">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                 <color key="backgroundColor" name="YP Black"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="148" id="SsK-FQ-Q4d" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="148" id="SsK-FQ-Q4d" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="375" height="148"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SsK-FQ-Q4d" id="7bp-ig-hP6">
@@ -91,6 +91,7 @@
                                             <outlet property="cellImage" destination="qol-O0-5rP" id="Y3t-xy-Pg8"/>
                                             <outlet property="dateLabel" destination="UMP-K2-HwL" id="vju-QR-O5t"/>
                                             <outlet property="likeButton" destination="yhD-hO-xjz" id="sDJ-0C-xWn"/>
+                                            <segue destination="j3R-lc-eZl" kind="show" id="qZG-HI-GGH"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -199,6 +200,36 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gq7-p5-zCP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-385" y="256"/>
+        </scene>
+        <!--Single Image View Controller-->
+        <scene sceneID="OvF-0U-ydh">
+            <objects>
+                <viewController id="j3R-lc-eZl" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="C6c-BU-9EY" customClass="Singl">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="9X1-xP-YBD">
+                                <rect key="frame" x="0.0" y="94" width="375" height="635"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Nmp-qo-FYc"/>
+                        <color key="backgroundColor" name="YP Black"/>
+                        <constraints>
+                            <constraint firstItem="Nmp-qo-FYc" firstAttribute="trailing" secondItem="9X1-xP-YBD" secondAttribute="trailing" id="8MP-QG-63n"/>
+                            <constraint firstItem="Nmp-qo-FYc" firstAttribute="bottom" secondItem="9X1-xP-YBD" secondAttribute="bottom" id="8vF-6m-T7K"/>
+                            <constraint firstItem="9X1-xP-YBD" firstAttribute="top" secondItem="Nmp-qo-FYc" secondAttribute="top" id="ELp-nN-GIQ"/>
+                            <constraint firstItem="9X1-xP-YBD" firstAttribute="leading" secondItem="Nmp-qo-FYc" secondAttribute="leading" id="P8z-M9-ubW"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Pt1-w4-5E0"/>
+                    <connections>
+                        <outlet property="imageView" destination="9X1-xP-YBD" id="2Ql-gp-cct"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FgR-se-KaH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1361" y="-413"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="cyK-5I-NJp">
