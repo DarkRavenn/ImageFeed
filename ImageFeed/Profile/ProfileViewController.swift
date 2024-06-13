@@ -50,7 +50,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func addLoginNameLabel() {
-        guard let label1 = nameLabel else { return }
+        guard let nameLabel else { return }
         let label = UILabel()
         label.text = "@ekaterina_nov"
         label.textColor = .ypGray
@@ -58,20 +58,20 @@ final class ProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         self.loginNameLabel = label
-        label.leadingAnchor.constraint(equalTo: label1.leadingAnchor).isActive = true
-        label.topAnchor.constraint(equalTo: label1.bottomAnchor, constant: 8).isActive = true
+        label.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor).isActive = true
+        label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8).isActive = true
     }
     
     private func addDescriptionLabel() {
-        guard let label2 = loginNameLabel else { return }
+        guard let loginNameLabel else { return }
         let label = UILabel()
         label.text = "Hello, world!"
         label.textColor = .ypWhite
         label.font = UIFont.systemFont(ofSize: 13)
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
-        label.leadingAnchor.constraint(equalTo: label2.leadingAnchor).isActive = true
-        label.topAnchor.constraint(equalTo: label2.bottomAnchor, constant: 8).isActive = true
+        label.leadingAnchor.constraint(equalTo: loginNameLabel.leadingAnchor).isActive = true
+        label.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8).isActive = true
         self.descriptionLabel = label
     }
     
