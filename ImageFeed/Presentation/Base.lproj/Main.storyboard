@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="1Xl-7w-diH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ORz-9w-0at">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -135,6 +135,57 @@
             </objects>
             <point key="canvasLocation" x="-385" y="256"/>
         </scene>
+        <!--Auth View Controller-->
+        <scene sceneID="Nvk-32-jyz">
+            <objects>
+                <viewController id="nHc-39-4Y8" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="DOD-kN-tVZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iZI-fl-1Wg">
+                                <rect key="frame" x="16" y="640" width="343" height="48"/>
+                                <color key="backgroundColor" name="YP White"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="ixj-3u-BmG"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Войти">
+                                    <color key="titleColor" name="YP Black"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="auth_screen_logo" translatesAutoresizingMaskIntoConstraints="NO" id="iZ3-Ia-o0p">
+                                <rect key="frame" x="157.66666666666666" y="376" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="jA8-8i-8rN"/>
+                                    <constraint firstAttribute="height" constant="60" id="oXj-3m-3eW"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="oKK-7l-hwF"/>
+                        <color key="backgroundColor" name="YP Black"/>
+                        <constraints>
+                            <constraint firstItem="iZI-fl-1Wg" firstAttribute="centerX" secondItem="DOD-kN-tVZ" secondAttribute="centerX" id="35m-co-2ce"/>
+                            <constraint firstItem="iZI-fl-1Wg" firstAttribute="leading" secondItem="oKK-7l-hwF" secondAttribute="leading" constant="16" id="44D-YA-OI1"/>
+                            <constraint firstItem="iZ3-Ia-o0p" firstAttribute="centerX" secondItem="DOD-kN-tVZ" secondAttribute="centerX" id="PZg-JN-VFE"/>
+                            <constraint firstItem="oKK-7l-hwF" firstAttribute="bottom" secondItem="iZI-fl-1Wg" secondAttribute="bottom" constant="90" id="gah-at-39p"/>
+                            <constraint firstItem="iZ3-Ia-o0p" firstAttribute="centerY" secondItem="DOD-kN-tVZ" secondAttribute="centerY" id="ieJ-mc-SVh"/>
+                            <constraint firstItem="oKK-7l-hwF" firstAttribute="trailing" secondItem="iZI-fl-1Wg" secondAttribute="trailing" constant="16" id="qAs-h2-Xts"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="gdX-oA-fP6"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AeK-tN-5Df" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-386" y="-1194"/>
+        </scene>
         <!--Single Image View Controller-->
         <scene sceneID="OvF-0U-ydh">
             <objects>
@@ -229,9 +280,28 @@
             </objects>
             <point key="canvasLocation" x="-386.39999999999998" y="-413.05418719211826"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="XHs-GK-TT3">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ORz-9w-0at" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="F9q-ti-1zX">
+                        <rect key="frame" x="0.0" y="50" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="nHc-39-4Y8" kind="relationship" relationship="rootViewController" id="ViO-lN-1WQ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ufw-bO-151" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1562" y="-1194"/>
+        </scene>
     </scenes>
     <resources>
         <image name="0" width="1600" height="1059"/>
+        <image name="auth_screen_logo" width="60" height="60"/>
         <image name="like_button_on" width="42" height="42"/>
         <image name="nav_back_button_white" width="24" height="24"/>
         <image name="sharing_button" width="51" height="51"/>
