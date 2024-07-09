@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ORz-9w-0at">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -218,20 +217,28 @@
                                     <action selector="didTapBackButton:" destination="QZh-JH-onE" eventType="touchUpInside" id="lB7-AY-fuT"/>
                                 </connections>
                             </button>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="uXd-My-TSl">
+                                <rect key="frame" x="0.0" y="35" width="375" height="4"/>
+                                <color key="progressTintColor" name="YP Black"/>
+                            </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Kte-D0-M11"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Kte-D0-M11" firstAttribute="trailing" secondItem="uXd-My-TSl" secondAttribute="trailing" id="4aW-aw-0YE"/>
                             <constraint firstAttribute="trailing" secondItem="ncf-WG-Vx8" secondAttribute="trailing" id="Cad-Ry-Io8"/>
+                            <constraint firstItem="uXd-My-TSl" firstAttribute="top" secondItem="Q1m-iw-QLi" secondAttribute="bottom" id="DZ9-aR-rmb"/>
                             <constraint firstItem="Q1m-iw-QLi" firstAttribute="leading" secondItem="Kte-D0-M11" secondAttribute="leading" constant="9" id="XaT-t7-nbz"/>
                             <constraint firstItem="ncf-WG-Vx8" firstAttribute="top" secondItem="Q1m-iw-QLi" secondAttribute="bottom" constant="8" id="fuE-8K-RzR"/>
                             <constraint firstItem="Q1m-iw-QLi" firstAttribute="top" secondItem="Kte-D0-M11" secondAttribute="top" constant="11" id="hOz-6r-lyY"/>
                             <constraint firstItem="ncf-WG-Vx8" firstAttribute="leading" secondItem="323-6d-fhI" secondAttribute="leading" id="mdu-gc-Nyu"/>
                             <constraint firstAttribute="bottom" secondItem="ncf-WG-Vx8" secondAttribute="bottom" id="xGT-HU-ULy"/>
+                            <constraint firstItem="uXd-My-TSl" firstAttribute="leading" secondItem="Kte-D0-M11" secondAttribute="leading" id="xxr-3u-6eH"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="JFL-8u-NDv"/>
                     <connections>
+                        <outlet property="progressView" destination="uXd-My-TSl" id="BP6-yP-NKA"/>
                         <outlet property="webView" destination="ncf-WG-Vx8" id="wxo-8k-AJw"/>
                     </connections>
                 </viewController>
