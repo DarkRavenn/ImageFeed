@@ -8,20 +8,36 @@
 import UIKit
 import WebKit
 
-protocol WebViewControllerDelegate: AnyObject {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
-}
-
 final class WebViewViewController: UIViewController {
+    @IBOutlet weak var progressView: UIProgressView!
+    @IBOutlet private weak var webView: WKWebView!
+    
     enum WebViewConstants {
         static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
     }
     
-    @IBOutlet weak var progressView: UIProgressView!
-    @IBOutlet private weak var webView: WKWebView!
-    
     weak var delegate: WebViewControllerDelegate?
+    
+    private func loadAuthView() {
+        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
+            print("urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) = nil")
+            return
+        }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: Constants.accessScope)
+        ]
+        
+        guard let url = urlComponents.url else {
+            print("url = urlComponents.url = nil")
+            return
+        }
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,27 +84,6 @@ final class WebViewViewController: UIViewController {
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
-    }
-    
-    private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            print("urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) = nil")
-            return
-        }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        
-        guard let url = urlComponents.url else {
-            print("url = urlComponents.url = nil")
-            return
-        }
-        let request = URLRequest(url: url)
-        webView.load(request)
     }
     
     @IBAction private func didTapBackButton(_ sender: Any) {
