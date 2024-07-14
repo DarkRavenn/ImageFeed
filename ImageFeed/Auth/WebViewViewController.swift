@@ -36,6 +36,7 @@ final class WebViewViewController: UIViewController {
             return
         }
         let request = URLRequest(url: url)
+        print(url)
         webView.load(request)
     }
     
@@ -102,7 +103,7 @@ extension WebViewViewController: WKNavigationDelegate {
                 decisionHandler(.cancel)
           } else {
                 decisionHandler(.allow)
-            }
+          }
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
