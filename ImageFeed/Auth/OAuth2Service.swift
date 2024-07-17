@@ -8,10 +8,12 @@
 import Foundation
 
 final class OAuth2Service {
+    private let tokenStorage = OAuth2TokenStorage()
+    private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
     static let shared = OAuth2Service()
     private init() {}
 
-    func fetchOAuthToken(code: String, completion: @escaping (Result<Data, Error>) -> Void) {
+    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
             preconditionFailure("Unable to construct OAuth token request")
         }
@@ -20,20 +22,24 @@ final class OAuth2Service {
             switch result {
             case .success(let data):
                 do {
-                    let response = try JSONDecoder().decode(AccessTokenResponse.self, from: data)
-                    let tokenStorage = OAuth2TokenStorage()
-                    tokenStorage.token = response.accessToken
-                    completion(.success(data))
+                    let response = try self.snakeCaseJSONDecoder.decode(AccessTokenResponse.self, from: data)
+                    self.tokenStorage.token = response.accessToken
+                    completion(.success(response.accessToken))
                 } catch {
+                    print(error)
                     completion(.failure(error))
                 }
             case .failure(let error): completion(.failure(error))
+                print(error)
             }
         }.resume()
     }
 
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
-        guard let baseURL = URL(string: "https://unsplash.com") else { return nil }
+        guard let baseURL = URL(string: "https://unsplash.com") else {
+            print("OAuth2Service.swift [39] URL(string: \"https://unsplash.com\") = nil")
+            return nil
+        }
 
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
         components?.path = "/oauth/token"
@@ -48,11 +54,13 @@ final class OAuth2Service {
 
         components?.queryItems = queryItems
 
-        guard let url = components?.url else { return nil }
+        guard let url = components?.url else {
+            print("OAuth2Service.swift [57] url = components?.url = nil")
+            return nil
+        }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-
         return request
     }
 }

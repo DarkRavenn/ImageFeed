@@ -9,10 +9,6 @@ import UIKit
 import WebKit
 
 final class WebViewViewController: UIViewController {
-    enum WebViewConstants {
-        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-    }
-    
     weak var delegate: WebViewControllerDelegate?
     
     @IBOutlet weak var progressView: UIProgressView!
@@ -65,8 +61,8 @@ final class WebViewViewController: UIViewController {
     }
     
     private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            print("urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) = nil")
+        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
+            print("urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) = nil")
             return
         }
         
@@ -82,7 +78,6 @@ final class WebViewViewController: UIViewController {
             return
         }
         let request = URLRequest(url: url)
-        print(url)
         webView.load(request)
     }
     
