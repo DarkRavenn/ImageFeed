@@ -9,7 +9,11 @@ import Foundation
 
 final class OAuth2Service {
     private let tokenStorage = OAuth2TokenStorage()
-    private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
+    private let snakeCaseJSONDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
     static let shared = OAuth2Service()
     private init() {}
 
