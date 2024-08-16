@@ -7,7 +7,15 @@
 
 import Foundation
 
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
 final class OAuth2Service {
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
     private let tokenStorage = OAuth2TokenStorage()
     private let snakeCaseJSONDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -17,12 +25,24 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     private init() {}
 
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            preconditionFailure("Unable to construct OAuth token request")
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
         }
-
-        URLSession.shared.data(for: request) { result in
+        
+        task?.cancel()
+        lastCode = code
+        
+        guard
+            let request = makeOAuthTokenRequest(code: code)
+        else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.data(for: request) { result in
             switch result {
             case .success(let data):
                 do {
@@ -36,7 +56,11 @@ final class OAuth2Service {
             case .failure(let error): completion(.failure(error))
                 print(error)
             }
-        }.resume()
+            self.task = nil
+            self.lastCode = nil
+        }
+        self.task = task
+        task.resume()
     }
 
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
