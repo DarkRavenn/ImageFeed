@@ -17,14 +17,10 @@ final class OAuth2Service {
     private var lastCode: String?
     
     private let tokenStorage = OAuth2TokenStorage()
-    private let snakeCaseJSONDecoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
+    private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
     static let shared = OAuth2Service()
     private init() {}
-
+    
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastCode != code else {
