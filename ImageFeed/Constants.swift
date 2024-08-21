@@ -19,4 +19,5 @@ enum Constants {
 
 enum UnsplashApiPath {
     static let me = "/me"
+    static let users = "/users"
 }

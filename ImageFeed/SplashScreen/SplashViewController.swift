@@ -14,6 +14,7 @@ final class SplashViewController: UIViewController {
     
     private let oauth2Service = OAuth2Service.shared
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private let oauth2TokenStorage = OAuth2TokenStorage()
     
     // MARK: - View Life Cycles
@@ -91,11 +92,25 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else { return }
             
             switch result {
-            case.success:
+            case.success(let profile):
                 print(result)
+                fetchProfileImage(profile.username)
                 self.switchToTabBarController()
             case.failure:
                 // TODO: [Sprint 11] Покажите ошибку получения профиля
+                break
+            }
+        }
+    }
+    
+    private func fetchProfileImage(_ username: String) {
+        profileImageService.fetchProfileImageURL(username: username) { result in
+            
+            switch result {
+            case.success:
+                print(result)
+            case.failure:
+                // TODO: [Sprint 11] Покажите ошибку получения изображения профиля
                 break
             }
         }
