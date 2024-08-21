@@ -7,38 +7,24 @@
 
 import Foundation
 
-protocol ProfileServiceDelegate: AnyObject {
-    func show(_ profileDetail: Profile)
-}
-
 enum ProfileServiceError: Error {
     case invalidRequest
 }
 
 final class ProfileService {
-    // MARK: - Public Properties
-    weak var delegate: ProfileServiceDelegate?
+    static let shared = ProfileService()
+    private init() {}
     
     // MARK: - Private Properties
     private var isActiveProfileRequests = false
+    
+    private(set) var profile: Profile?
     
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     
     private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
     private let tokenStorage = OAuth2TokenStorage()
-    
-    // MARK: - Public Methods
-    func fetchProfile() {
-        fetchProfile { result in
-            switch result {
-            case .success(let profile):
-                self.delegate?.show(profile)
-            case .failure:
-                return
-            }
-        }
-    }
     
     // MARK: - Private Methods
     private func makeMeRequest() -> URLRequest? {
@@ -61,6 +47,8 @@ final class ProfileService {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        //TODO: удалить дебажные коментны 👇
+        print(token)
         print(request)
         return request
     }    
@@ -91,6 +79,7 @@ final class ProfileService {
                                           lastName: responce.lastName,
                                           username: responce.username,
                                           bio: responce.bio ?? "")
+                    self.profile = profile
                     completion(.success(profile))
                 } catch {
                     print(error)

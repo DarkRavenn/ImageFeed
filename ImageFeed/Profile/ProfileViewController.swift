@@ -8,7 +8,6 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-
     // MARK: - Private Properties
     private var avatarImageView: UIImageView?
     private var nameLabel: UILabel?
@@ -16,8 +15,8 @@ final class ProfileViewController: UIViewController {
     private var descriptionLabel: UILabel?
     private var button: UIButton?
     
-    private var profileService: ProfileService?
     private var profileDetails: Profile?
+    private var profileService = ProfileService.shared
     
     // MARK: - View Life Cycles    
     override func viewDidLoad() {
@@ -29,10 +28,7 @@ final class ProfileViewController: UIViewController {
         addDescriptionLabel()
         addLogoutButton()
         
-        profileService = ProfileService()
-        profileService?.delegate = self
-        
-        profileService?.fetchProfile()
+        updateProfileDetails(profile: profileService.profile)
     }
         
     // MARK: - Private Methods
@@ -116,14 +112,13 @@ final class ProfileViewController: UIViewController {
         let profileImage = UIImage(named: "avatar_no_data")
         avatarImageView?.image = profileImage
     }
-}
-
-// MARK: - ProfileServiceDelegate
-extension ProfileViewController: ProfileServiceDelegate {
-    func show(_ profileDetail: Profile) {
-        nameLabel?.text = profileDetail.name
-        loginNameLabel?.text = profileDetail.loginName
-        descriptionLabel?.text = profileDetail.bio
+    
+    private func updateProfileDetails(profile: Profile?) {
+        guard let profile else { return }
+        
+        nameLabel?.text = profile.name
+        loginNameLabel?.text = profile.loginName
+        descriptionLabel?.text = profile.bio
     }
 }
 
