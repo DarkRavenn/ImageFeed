@@ -9,6 +9,7 @@ import Foundation
 
 final class ProfileImageService {
     static let shared = ProfileImageService()
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private init() {}
     
     // MARK: - Private Properties
@@ -46,7 +47,6 @@ final class ProfileImageService {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         //TODO: удалить дебажные коментны 👇
         print(token)
-        print(request)
         return request
     }
     
@@ -75,6 +75,10 @@ final class ProfileImageService {
                     let avaratURL = responce.profileImage.small
                     self.avatarURL = avaratURL
                     completion(.success(avaratURL))
+                    NotificationCenter.default
+                        .post(name: ProfileImageService.didChangeNotification,
+                              object: self,
+                              userInfo: ["URL": avaratURL])
                 } catch {
                     print(error)
                     completion(.failure(error))

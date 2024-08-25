@@ -88,16 +88,12 @@ extension SplashViewController: AuthViewControllerDelegate {
         UIBlockingProgressHUD.show()
         profileService.fetchProfile { [weak self] result in
             UIBlockingProgressHUD.dismiss()
-            
             guard let self = self else { return }
-            
             switch result {
             case.success(let profile):
-                print(result)
                 fetchProfileImage(profile.username)
                 self.switchToTabBarController()
             case.failure:
-                // TODO: [Sprint 11] Покажите ошибку получения профиля
                 break
             }
         }
@@ -105,12 +101,10 @@ extension SplashViewController: AuthViewControllerDelegate {
     
     private func fetchProfileImage(_ username: String) {
         profileImageService.fetchProfileImageURL(username: username) { result in
-            
             switch result {
             case.success:
                 print(result)
             case.failure:
-                // TODO: [Sprint 11] Покажите ошибку получения изображения профиля
                 break
             }
         }
