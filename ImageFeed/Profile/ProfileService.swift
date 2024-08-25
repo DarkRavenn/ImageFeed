@@ -47,15 +47,13 @@ final class ProfileService {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        //TODO: удалить дебажные коментны 👇
-        print(token)
-        print(request)
         return request
     }    
     
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard isActiveProfileRequests == false else {
+            print("[fetchProfile]: попытка отправить запрос при наличии активного запроса")
             completion(.failure(ProfileServiceError.invalidRequest))
             return
         }
@@ -66,30 +64,26 @@ final class ProfileService {
         guard
             let request = makeMeRequest()
         else {
+            print("[makeMeRequest]: Optional binding = nil")
             completion(.failure(ProfileServiceError.invalidRequest))
             return
         }
         
-        let task = urlSession.data(for: request) { result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             switch result {
             case .success(let data):
-                do {
-                    let responce = try self.snakeCaseJSONDecoder.decode(ProfileResult.self, from: data)
-                    let profile = Profile(firstName: responce.firstName,
-                                          lastName: responce.lastName,
-                                          username: responce.username,
-                                          bio: responce.bio ?? "")
-                    self.profile = profile
-                    completion(.success(profile))
-                } catch {
-                    print(error)
-                    completion(.failure(error))
-                }
-            case .failure(let error): completion(.failure(error))
-                print(error)
+                let profile = Profile(firstName: data.firstName,
+                                      lastName: data.lastName,
+                                      username: data.username,
+                                      bio: data.bio ?? "")
+                self?.profile = profile
+                completion(.success(profile))
+            case .failure(let error): 
+                print("[urlSession.objectTask]: \(error)")
+                completion(.failure(error))
             }
-            self.task = nil
-            self.isActiveProfileRequests = false
+            self?.task = nil
+            self?.isActiveProfileRequests = false
         }
         self.task = task
         task.resume()

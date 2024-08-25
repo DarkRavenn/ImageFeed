@@ -118,6 +118,7 @@ final class ProfileViewController: UIViewController {
             let url = URL(string: profileImageURL)
         else { return }
         // TODO: [Sprint 11] Обновить аватар, используя Kingfisher
+        print("Здесь могла бы быть ваша реклама \(url)")
     }
     
     @objc

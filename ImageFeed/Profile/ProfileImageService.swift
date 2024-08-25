@@ -25,7 +25,7 @@ final class ProfileImageService {
     private var profileService = ProfileService.shared
     
     // MARK: - Private Methods
-    private func makeMeRequest() -> URLRequest? {
+    private func makeUsersRequest() -> URLRequest? {
         guard
             let baseURL = Constants.defaultBaseApiURL,
             let token = tokenStorage.token,
@@ -45,7 +45,7 @@ final class ProfileImageService {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        //TODO: удалить дебажные коментны 👇
+        // TODO: удалить дебажные коментны 👇
         print(token)
         return request
     }
@@ -53,6 +53,7 @@ final class ProfileImageService {
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void){
         assert(Thread.isMainThread)
         guard isActiveProfileRequests == false else {
+            print("[fetchProfileImageURL]: попытка отправить запрос при наличии активного запроса")
             completion(.failure(ProfileServiceError.invalidRequest))
             return
         }
@@ -61,33 +62,29 @@ final class ProfileImageService {
         isActiveProfileRequests = true
         
         guard
-            let request = makeMeRequest()
+            let request = makeUsersRequest()
         else {
+            print("[makeUsersRequest]: Optional binding = nil")
             completion(.failure(ProfileServiceError.invalidRequest))
             return
         }
         
-        let task = urlSession.data(for: request) { result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             switch result {
             case .success(let data):
-                do {
-                    let responce = try self.snakeCaseJSONDecoder.decode(UserResult.self, from: data)
-                    let avaratURL = responce.profileImage.small
-                    self.avatarURL = avaratURL
-                    completion(.success(avaratURL))
-                    NotificationCenter.default
-                        .post(name: ProfileImageService.didChangeNotification,
-                              object: self,
-                              userInfo: ["URL": avaratURL])
-                } catch {
-                    print(error)
-                    completion(.failure(error))
-                }
-            case .failure(let error): completion(.failure(error))
-                print(error)
+                let avaratURL = data.profileImage.small
+                self?.avatarURL = avaratURL
+                completion(.success(avaratURL))
+                NotificationCenter.default
+                    .post(name: ProfileImageService.didChangeNotification,
+                          object: self,
+                          userInfo: ["URL": avaratURL])
+            case .failure(let error): 
+                print("[urlSession.objectTask]: \(error)")
+                completion(.failure(error))
             }
-            self.task = nil
-            self.isActiveProfileRequests = false
+            self?.task = nil
+            self?.isActiveProfileRequests = false
         }
         self.task = task
         task.resume()
