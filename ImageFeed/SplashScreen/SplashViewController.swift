@@ -11,8 +11,7 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Private Properties
     private let showAuthenticationScreenSegueIdentifier = "showAuthenticationScreen"
-    
-    private let oauth2Service = OAuth2Service.shared
+
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     private let oauth2TokenStorage = OAuth2TokenStorage()
@@ -63,25 +62,8 @@ extension SplashViewController {
 
 // MARK: - AuthViewControllerDelegate
 extension SplashViewController: AuthViewControllerDelegate {
-    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            self.fetchOAuthToken(code)
-        }
-    }
-
-    private func fetchOAuthToken(_ code: String) {
-        UIBlockingProgressHUD.show()
-        oauth2Service.fetchOAuthToken(code) { [weak self] result in
-            UIBlockingProgressHUD.dismiss()
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                fetchProfile()
-            case .failure:
-                break
-            }
-        }
+    func didAuthenticate(_ vc: AuthViewController) {
+        fetchProfile()
     }
     
     private func fetchProfile() {
