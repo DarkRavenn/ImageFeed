@@ -35,7 +35,9 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else { return }
                 self.updateAvatar()
             }
-         
+        
+        view.backgroundColor = .ypBlack
+        
         addAvatarImageView()
         addNameLabel()
         addLoginNameLabel()
