@@ -48,7 +48,7 @@ final class ProfileViewController: UIViewController {
         
     // MARK: - Private Methods
     private func addAvatarImageView() {
-        let profileImage = UIImage(named: "placeholder")
+        let profileImage = UIImage(named: "avatar")
         let imageView = UIImageView(image: profileImage)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -118,6 +118,10 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
+        
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
         
         let processor = RoundCornerImageProcessor(cornerRadius: 61)
         avatarImageView?.kf.setImage(with: url,
