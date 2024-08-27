@@ -14,7 +14,6 @@ final class OAuth2TokenStorage {
     var token: String? {
         get {
             return KeychainWrapper.standard.string(forKey: tokenKey)
-//            return UserDefaults.standard.string(forKey: tokenKey)
         }
         set {
             if let token = newValue {
@@ -23,10 +22,8 @@ final class OAuth2TokenStorage {
                     print("Ошибка сохранения токена")
                     return
                 }
-//                UserDefaults.standard.set(token, forKey: tokenKey)
             } else {
                 let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: tokenKey)
-//                UserDefaults.standard.removeObject(forKey: tokenKey)
             }
         }
     }

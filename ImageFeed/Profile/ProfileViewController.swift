@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import SwiftKeychainWrapper
 
 final class ProfileViewController: UIViewController {
     
@@ -144,6 +145,8 @@ final class ProfileViewController: UIViewController {
         
         let profileImage = UIImage(named: "placeholder")
         avatarImageView?.image = profileImage
+        
+        let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: "accessToken")
     }
     
     private func updateProfileDetails(profile: Profile?) {
@@ -154,4 +157,3 @@ final class ProfileViewController: UIViewController {
         descriptionLabel?.text = profile.bio
     }
 }
-

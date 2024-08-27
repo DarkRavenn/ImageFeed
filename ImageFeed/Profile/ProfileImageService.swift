@@ -45,8 +45,6 @@ final class ProfileImageService {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        // TODO: удалить дебажные коментны 👇
-        print(token)
         return request
     }
     
@@ -89,5 +87,4 @@ final class ProfileImageService {
         self.task = task
         task.resume()
     }
-    
 }
