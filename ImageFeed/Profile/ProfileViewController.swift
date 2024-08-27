@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -34,20 +35,20 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else { return }
                 self.updateAvatar()
             }
-        updateAvatar()  
-        
+         
         addAvatarImageView()
         addNameLabel()
         addLoginNameLabel()
         addDescriptionLabel()
         addLogoutButton()
         
+        updateAvatar()
         updateProfileDetails(profile: profileService.profile)
     }
         
     // MARK: - Private Methods
     private func addAvatarImageView() {
-        let profileImage = UIImage(named: "avatar")
+        let profileImage = UIImage(named: "placeholder")
         let imageView = UIImageView(image: profileImage)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -117,8 +118,11 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        // TODO: [Sprint 11] Обновить аватар, используя Kingfisher
-        print("Здесь могла бы быть ваша реклама \(url)")
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        avatarImageView?.kf.setImage(with: url,
+                                     placeholder: UIImage(named: "placeholder"),
+                                     options: [.processor(processor)])
     }
     
     @objc
@@ -132,7 +136,7 @@ final class ProfileViewController: UIViewController {
         descriptionLabel?.removeFromSuperview()
         descriptionLabel = nil
         
-        let profileImage = UIImage(named: "avatar_no_data")
+        let profileImage = UIImage(named: "placeholder")
         avatarImageView?.image = profileImage
     }
     
