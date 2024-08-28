@@ -23,7 +23,7 @@ final class OAuth2TokenStorage {
                     return
                 }
             } else {
-                let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: tokenKey)
+                KeychainWrapper.standard.removeObject(forKey: tokenKey)
             }
         }
     }

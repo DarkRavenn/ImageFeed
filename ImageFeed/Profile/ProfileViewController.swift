@@ -146,7 +146,8 @@ final class ProfileViewController: UIViewController {
         let profileImage = UIImage(named: "placeholder")
         avatarImageView?.image = profileImage
         
-        let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: "accessToken")
+        KeychainWrapper.standard.removeObject(forKey: "accessToken")
+        
     }
     
     private func updateProfileDetails(profile: Profile?) {

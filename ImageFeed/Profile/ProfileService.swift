@@ -73,7 +73,7 @@ final class ProfileService {
             switch result {
             case .success(let data):
                 let profile = Profile(firstName: data.firstName,
-                                      lastName: data.lastName,
+                                      lastName: data.lastName ?? "",
                                       username: data.username,
                                       bio: data.bio ?? "")
                 self?.profile = profile
