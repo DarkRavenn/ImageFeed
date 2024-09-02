@@ -10,11 +10,13 @@ import UIKit
 final class ImagesListViewController: UIViewController {
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    private let imageListService = ImagesListService()
+    private let imageListService = ImagesListService.shared
     
     @IBOutlet private var tableView: UITableView!
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    
+    private var imageListServiceObserver: NSObjectProtocol?
     
     private lazy var dataFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -26,7 +28,21 @@ final class ImagesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imageListServiceObserver = NotificationCenter.default    // 2
+                    .addObserver(
+                        forName: ImagesListService.didChangeNotification, // 3
+                        object: nil,                                        // 4
+                        queue: .main                                        // 5
+                    ) { [weak self] _ in
+                        guard let self = self else { return }
+                        
+//                        print("Нотификация")
+                        self.printPhotosArray()                                // 6
+                    }
+        
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom:12, right: 0)
+        
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -43,6 +59,22 @@ final class ImagesListViewController: UIViewController {
             viewController.image = image // 6
         } else {
             super.prepare(for: segue, sender: sender) // 7
+        }
+    }
+    
+    private func printPhotosArray() {
+        for photo in imageListService.photos {
+            
+            print("""
+                  id: \(photo.id)
+                  size: \(photo.size)
+                  createdAt: \(photo.createdAt ?? Date())
+                  welcomeDescription: \(photo.welcomeDescription ?? "Сервер сказал что его нет")
+                  thumbImageURL: \(photo.thumbImageURL)
+                  largeImageURL: \(photo.largeImageURL)
+                  isLiked: \(photo.isLiked)
+                  """)
+            
         }
     }
 }

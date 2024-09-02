@@ -8,6 +8,12 @@
 import Foundation
 
 final class ImagesListService {
+    
+    static let shared = ImagesListService()
+    private init() {}
+    
+    static let didChangeNotification = Notification.Name(rawValue: "ImageListProviderDidChange")
+    
     private var isActiveArrayPhoto = false
     
     private (set) var photos: [Photo] = []
@@ -18,7 +24,12 @@ final class ImagesListService {
     private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
     private let tokenStorage = OAuth2TokenStorage()
     
-    
+    private lazy var dataFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        return formatter
+    }()
     
     
     private var lastLoadedPage: Int?
@@ -35,7 +46,32 @@ final class ImagesListService {
                 switch result {
                 case.success(let arrayPhoto):
                     self.lastLoadedPage = nextPage
-                    print(arrayPhoto)
+                    for photo in arrayPhoto {
+//                        DispatchQueue.main.async() {
+                            self.photos.append(Photo(id: photo.id,
+                                                size: CGSize(width: photo.width,
+                                                             height: photo.height),
+                                                createdAt: self.dataFormatter.date(from: photo.createdAt),
+                                                welcomeDescription: photo.description,
+                                                thumbImageURL: photo.urls.thumb,
+                                                largeImageURL: photo.urls.full,
+                                                isLiked: photo.likedByUser))
+//                        }
+                    }
+                    NotificationCenter.default
+                        .post(name: ImagesListService.didChangeNotification,
+                              object: self,
+                              userInfo: ["Photo": photos])
+                    // TODO: Удали дебажный коммент 👇
+//                    print("""
+//                          id: \(photos[0].id)
+//                          size: \(photos[0].size)
+//                          createdAt: \(photos[0].createdAt ?? Date())
+//                          welcomeDescription: \(photos[0].welcomeDescription ?? "Сервер сказал что его нет")
+//                          thumbImageURL: \(photos[0].thumbImageURL)
+//                          largeImageURL: \(photos[0].largeImageURL)
+//                          isLiked: \(photos[0].isLiked)
+//                          """)
                 case.failure:
                     break
                 }
