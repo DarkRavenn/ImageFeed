@@ -7,36 +7,53 @@
 
 import Foundation
 
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
 final class OAuth2Service {
-    private let tokenStorage = OAuth2TokenStorage()
-    private let snakeCaseJSONDecoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
+    private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
     static let shared = OAuth2Service()
     private init() {}
-
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            preconditionFailure("Unable to construct OAuth token request")
+    
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard lastCode != code else {
+            print("[fetchOAuthToken]: попытка отправить запрос при наличии активного запроса")
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
         }
-
-        URLSession.shared.data(for: request) { result in
+        
+        task?.cancel()
+        lastCode = code
+        
+        guard
+            let request = makeOAuthTokenRequest(code: code)
+        else {
+            print("[makeOAuthTokenRequest]: Optional binding = nil")
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<AccessTokenResponse, Error>) in
             switch result {
             case .success(let data):
-                do {
-                    let response = try self.snakeCaseJSONDecoder.decode(AccessTokenResponse.self, from: data)
-                    self.tokenStorage.token = response.accessToken
-                    completion(.success(response.accessToken))
-                } catch {
-                    print(error)
-                    completion(.failure(error))
-                }
-            case .failure(let error): completion(.failure(error))
-                print(error)
+                let tokenStorage = OAuth2TokenStorage()
+                tokenStorage.token = data.accessToken
+                completion(.success(data.accessToken))
+            case .failure(let error): 
+                print("[urlSession.objectTask]: \(error)")
+                completion(.failure(error))
             }
-        }.resume()
+            self?.task = nil
+            self?.lastCode = nil
+        }
+        self.task = task
+        task.resume()
     }
 
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {

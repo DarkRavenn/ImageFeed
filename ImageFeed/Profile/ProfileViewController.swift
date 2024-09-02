@@ -6,24 +6,50 @@
 //
 
 import UIKit
+import Kingfisher
+import SwiftKeychainWrapper
 
 final class ProfileViewController: UIViewController {
+    
+    // MARK: - Private Properties
     private var avatarImageView: UIImageView?
     private var nameLabel: UILabel?
     private var loginNameLabel: UILabel?
     private var descriptionLabel: UILabel?
     private var button: UIButton?
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    private var profileDetails: Profile?
+    private var profileService = ProfileService.shared
+    
+    // MARK: - View Life Cycles    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        
+        view.backgroundColor = .ypBlack
         
         addAvatarImageView()
         addNameLabel()
         addLoginNameLabel()
         addDescriptionLabel()
         addLogoutButton()
+        
+        updateAvatar()
+        updateProfileDetails(profile: profileService.profile)
     }
-    
+        
+    // MARK: - Private Methods
     private func addAvatarImageView() {
         let profileImage = UIImage(named: "avatar")
         let imageView = UIImageView(image: profileImage)
@@ -90,6 +116,22 @@ final class ProfileViewController: UIViewController {
         button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
     }
     
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        avatarImageView?.kf.setImage(with: url,
+                                     placeholder: UIImage(named: "placeholder"),
+                                     options: [.processor(processor)])
+    }
+    
     @objc
     private func didTapExitButton() {
         nameLabel?.removeFromSuperview()
@@ -101,7 +143,18 @@ final class ProfileViewController: UIViewController {
         descriptionLabel?.removeFromSuperview()
         descriptionLabel = nil
         
-        let profileImage = UIImage(named: "avatar_no_data")
+        let profileImage = UIImage(named: "placeholder")
         avatarImageView?.image = profileImage
+        
+        KeychainWrapper.standard.removeObject(forKey: "accessToken")
+        
+    }
+    
+    private func updateProfileDetails(profile: Profile?) {
+        guard let profile else { return }
+        
+        nameLabel?.text = profile.name
+        loginNameLabel?.text = profile.loginName
+        descriptionLabel?.text = profile.bio
     }
 }

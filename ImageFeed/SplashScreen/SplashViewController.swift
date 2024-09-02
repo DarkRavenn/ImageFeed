@@ -8,18 +8,37 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-    private let showAuthenticationScreenSegueIdentifier = "showAuthenticationScreen"
     
-    private let oauth2Service = OAuth2Service.shared
+    // MARK: - Private Properties
+    private let showAuthenticationScreenSegueIdentifier = "showAuthenticationScreen"
+
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private let oauth2TokenStorage = OAuth2TokenStorage()
+    
+    // MARK: - View Life Cycles
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .ypBlack
+        
+        addSplashScreenLogo()
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         if oauth2TokenStorage.token != nil {
-            switchToTabBarController()
+            fetchProfile()
         } else {
-            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+            let storyBoard = UIStoryboard(name: "Main", bundle: .main)
+            let authViewController = storyBoard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController
+            
+            guard let authViewController else { return }
+            
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            
+            present(authViewController, animated: true)
         }
     }
     
@@ -28,10 +47,12 @@ final class SplashViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
     }
 
+    // MARK: - Overrides Methods
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
 
+    // MARK: - Private Methods
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
@@ -40,37 +61,44 @@ final class SplashViewController: UIViewController {
     }
 }
 
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthenticationScreenSegueIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)") }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
-
+// MARK: - AuthViewControllerDelegate
 extension SplashViewController: AuthViewControllerDelegate {
-    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            self.fetchOAuthToken(code)
-        }
+    func didAuthenticate(_ vc: AuthViewController) {
+        vc.dismiss(animated: true)
     }
-
-    private func fetchOAuthToken(_ code: String) {
-        oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
+    
+    private func fetchProfile() {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             guard let self = self else { return }
             switch result {
-            case .success:
+            case.success(let profile):
+                fetchProfileImage(profile.username)
                 self.switchToTabBarController()
-            case .failure:
+            case.failure:
                 break
             }
         }
+    }
+    
+    private func fetchProfileImage(_ username: String) {
+        profileImageService.fetchProfileImageURL(username: username) { result in
+            switch result {
+            case.success:
+                print(result)
+            case.failure:
+                break
+            }
+        }
+    }
+    
+    private func addSplashScreenLogo() {
+        let splashScreenLogo = UIImage(named: "splash_screen_logo")
+        let imageView = UIImageView(image: splashScreenLogo)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
+        imageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        imageView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
     }
 }
