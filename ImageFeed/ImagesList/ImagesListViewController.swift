@@ -16,6 +16,21 @@ final class ImagesListViewController: UIViewController {
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     
+    var photos: [Photo] = [Photo(id: "jbmjneY3a6g",
+                                 size: CGSize(width: 8736.0, height: 11648.0),
+                                 createdAt: Date(),
+                                 welcomeDescription: "Сервер сказал что его нет",
+                                 thumbImageURL: "https://images.unsplash.com/photo-1721332155484-5aa73a54c6d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2MjE4NDN8MXwxfGFsbHwxfHx8fHx8Mnx8MTcyNTU3MzAxMHw&ixlib=rb-4.0.3&q=80&w=200",
+                                 largeImageURL: "https://images.unsplash.com/photo-1721332155484-5aa73a54c6d2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w2MjE4NDN8MXwxfGFsbHwxfHx8fHx8Mnx8MTcyNTU3MzAxMHw&ixlib=rb-4.0.3&q=85",
+                                 isLiked: false),
+                           Photo(id: "7bQIFzFlt18",
+                                 size: CGSize(width: 2000.0, height: 3000.0),
+                                 createdAt: Date(),
+                                 welcomeDescription: "Сервер сказал что его нет",
+                                 thumbImageURL: "https://images.unsplash.com/photo-1725492123815-576fcd133766?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2MjE4NDN8MHwxfGFsbHwyfHx8fHx8Mnx8MTcyNTU3MzAxMHw&ixlib=rb-4.0.3&q=80&w=200",
+                                 largeImageURL: "https://images.unsplash.com/photo-1725492123815-576fcd133766?crop=entropy&cs=srgb&fm=jpg&ixid=M3w2MjE4NDN8MHwxfGFsbHwyfHx8fHx8Mnx8MTcyNTU3MzAxMHw&ixlib=rb-4.0.3&q=85",
+                                 isLiked: false)]
+    
     private var imageListServiceObserver: NSObjectProtocol?
     
     private lazy var dataFormatter: DateFormatter = {
@@ -142,6 +157,12 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // TODO: 
-        imageListService.fetchPhotosNextPage()
+        if indexPath.row + 1 == photosName.count {
+            print("Последний: \(indexPath)")
+//            imageListService.fetchPhotosNextPage()
+        } else {
+            print("Не последний: \(indexPath)")
+        }
+        
     }
 }
