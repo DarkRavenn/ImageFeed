@@ -16,6 +16,7 @@ final class ImagesListService {
     private (set) var photos: [Photo] = []
     
     private var isActiveArrayPhoto = false
+    private var isActiveLikeRequest = false
     
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
@@ -69,7 +70,7 @@ extension ImagesListService {
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "per_page", value: "10"),
         ]
-
+        
         components?.queryItems = queryItems
         
         guard let url = components?.url else {
@@ -132,5 +133,68 @@ extension ImagesListService {
             )
             photos.append(newPhoto)
         }
+    }
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void?, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard isActiveLikeRequest == false else {
+            print("[fetchProfile]: попытка отправить запрос при наличии активного запроса")
+            completion(.failure(ProfileServiceError.invalidRequest))
+            return
+        }
+        
+        task?.cancel()
+        isActiveLikeRequest = true
+        
+        guard
+            let request = makeLikeRequest(photoId, isLike)
+        else {
+            print("[makeMeRequest]: Optional binding = nil")
+            completion(.failure(ProfileServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<PhotosResult, Error>) in
+            switch result {
+            case .success(let data):
+                print(data)
+                
+                if let index = self?.photos.firstIndex(where: {$0.id == photoId}) {
+                    self?.photos[index].isLiked = isLike
+                    completion(.success(nil))
+                }
+                
+            case .failure(let error):
+                print("[urlSession.objectTask]: \(error)")
+                completion(.failure(error))
+            }
+            self?.task = nil
+            self?.isActiveLikeRequest = false
+        }
+        self.task = task
+        task.resume()
+    }
+    
+    private func makeLikeRequest(_ photoId: String, _ isLike: Bool) -> URLRequest? {
+        guard
+            let baseURL = Constants.defaultBaseApiURL,
+            let token = tokenStorage.token
+        else {
+            print("ImagesListService [142] Constants.defaultBaseApiURL = nil or tokenStorage.token")
+            return nil
+        }
+        
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
+        components?.path = "/photos/\(photoId)/like"
+        
+        guard let url = components?.url else {
+            print("ImagesListService [153] url = components?.url = nil")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike == true ? "DELETE" : "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
     }
 }

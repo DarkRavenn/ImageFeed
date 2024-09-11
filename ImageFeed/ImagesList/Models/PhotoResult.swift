@@ -6,6 +6,9 @@
 //
 
 import Foundation
+struct PhotosResult: Codable {
+    let photo: PhotoResult
+}
 
 struct PhotoResult: Codable {
     let id: String

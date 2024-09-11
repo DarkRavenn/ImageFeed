@@ -102,6 +102,7 @@ extension ImagesListViewController {
         
         cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(with: imageUrl, placeholder: UIImage(named: "scribble-placeholder"))
+        cell.cellImage.accessibilityLabel = photo.id
         
         let gradientLayer = CAGradientLayer()
         let gradientHeight = 30.0
@@ -114,8 +115,7 @@ extension ImagesListViewController {
         
         cell.dateLabel.text = photo.createdAt != nil ? dataFormatter.string(from: photo.createdAt!) : ""
         
-        
-        let isLiked = indexPatch.row % 2 == 0
+        let isLiked = photo.isLiked
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
     }
