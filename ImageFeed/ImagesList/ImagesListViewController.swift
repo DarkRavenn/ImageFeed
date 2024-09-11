@@ -85,8 +85,9 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        configCell(for: imageListCell, with: indexPath)
+        imageListCell.delegate = self
         
+        configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
 }
@@ -102,7 +103,6 @@ extension ImagesListViewController {
         
         cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(with: imageUrl, placeholder: UIImage(named: "scribble-placeholder"))
-        cell.cellImage.accessibilityLabel = photo.id
         
         let gradientLayer = CAGradientLayer()
         let gradientHeight = 30.0
@@ -141,5 +141,31 @@ extension ImagesListViewController: UITableViewDelegate {
         if indexPath.row + 1 == imageListService.photos.count {
             imageListService.fetchPhotosNextPage()
         }
+    }
+}
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        UIBlockingProgressHUD.show()
+        imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+            switch result {
+            case .success:
+                self.photos = self.imageListService.photos
+                cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                self.showAlert(title: "Что-то пошло не так :(", message: "Попробуйте ещё раз позже")
+            }
+        }
+    }
+
+    private func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
