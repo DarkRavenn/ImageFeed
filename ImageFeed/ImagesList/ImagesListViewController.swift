@@ -9,14 +9,16 @@ import UIKit
 import Kingfisher
 
 final class ImagesListViewController: UIViewController {
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    private let imageListService = ImagesListService.shared
-    
+    // MARK: - IB Outlets
     @IBOutlet private var tableView: UITableView!
     
+    // MARK: - Public Properties
     var photos: [Photo] = []
     
+    // MARK: - Private Properties
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private let imageListService = ImagesListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
     
     private lazy var dataFormatter: DateFormatter = {
@@ -26,6 +28,7 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,6 +44,7 @@ final class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom:12, right: 0)
     }
     
+    // MARK: - Overrides Methods
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier {
             guard
@@ -51,13 +55,13 @@ final class ImagesListViewController: UIViewController {
                 return
             }
             
-            let image = UIImage(named: "scribble-placeholder")
-            viewController.image = image
+            viewController.photo = photos[indexPath.row]
         } else {
             super.prepare(for: segue, sender: sender)
         }
     }
     
+    // MARK: - Private Methods
     private func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imageListService.photos.count
@@ -92,6 +96,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - Extansion
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPatch: IndexPath) { 
         let photo = photos[indexPatch.row]

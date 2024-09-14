@@ -13,26 +13,35 @@ protocol ImagesListCellDelegate: AnyObject {
 }
 
 final class ImagesListCell: UITableViewCell {
-    static let reuseIdentifier = "ImagesListCell"
-    private let imagesListService = ImagesListService.shared
-    weak var delegate: ImagesListCellDelegate?
     
+    // MARK: - IB Outlets
     @IBOutlet var cellImage: UIImageView!
     @IBOutlet var likeButton: UIButton!
     @IBOutlet var dateLabel: UILabel!
     
+    // MARK: - Public Properties
+    static let reuseIdentifier = "ImagesListCell"
+    weak var delegate: ImagesListCellDelegate?
+    
+    // MARK: - Private Properties
+    private let imagesListService = ImagesListService.shared
+    
+    // MARK: - Overrides Methods
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        // Отменяем загрузку, что бы избежать багов при переиспользовании ячеек
         cellImage.kf.cancelDownloadTask()
     }
     
+    // MARK: - IB Actions
+    @IBAction func likeButtonTap(_ sender: Any) {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
+    // MARK: - Public Methods
     func setIsLiked(_ isLiked: Bool) {
         likeButton.setImage(UIImage(named: isLiked ? "like_button_on" : "like_button_off"), for: .normal)
     }
     
-    @IBAction func likeButtonTap(_ sender: Any) {
-        delegate?.imageListCellDidTapLike(self)
-    }
+
 }

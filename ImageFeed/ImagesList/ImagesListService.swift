@@ -8,13 +8,12 @@
 import Foundation
 
 final class ImagesListService {
-    static let shared = ImagesListService()
-    private init() {}
     
+    // MARK: - Public Properties
     static let didChangeNotification = Notification.Name(rawValue: "ImageListProviderDidChange")
-
     private (set) var photos: [Photo] = []
     
+    // MARK: - Private Properties
     private var isActiveArrayPhoto = false
     private var isActiveLikeRequest = false
     
@@ -26,6 +25,11 @@ final class ImagesListService {
     
     private var lastLoadedPage: Int?
     
+    // MARK: - Initializers
+    static let shared = ImagesListService()
+    private init() {}
+    
+    // MARK: - Public Methods
     func fetchPhotosNextPage() {
         print("Проверяем наличие активной загрузки изображений текущая страница: \(lastLoadedPage ?? 0)")
         if task == nil {
@@ -53,6 +57,7 @@ final class ImagesListService {
     }
 }
 
+// MARK: - Extansion
 extension ImagesListService {
     private func makeMeRequest(page: Int) -> URLRequest? {
         guard
