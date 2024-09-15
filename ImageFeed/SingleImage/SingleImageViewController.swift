@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
@@ -22,6 +23,7 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
+        imageView.image = UIImage(named: "scribble-placeholder-without-background")
         guard let photo else { return }
         setImage(photo)
     }
@@ -42,6 +44,11 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Private Methods
     private func setImage(_ photo: Photo) {
         UIBlockingProgressHUD.show()
+        
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
+        
         imageView.kf.setImage(with: URL(string: photo.largeImageURL)) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             

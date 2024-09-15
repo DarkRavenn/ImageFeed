@@ -55,6 +55,10 @@ final class ImagesListService {
             print("Есть активная загрузка изображений новый запрос отменен")
         }
     }
+    
+    func cleanPhotos() {
+        photos = []
+    }
 }
 
 // MARK: - Extansion
