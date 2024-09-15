@@ -16,6 +16,7 @@ final class SingleImageViewController: UIViewController {
     
     // MARK: - Public Properties
     var photo: Photo?
+    let placeholder = UIImage(named: "scribble-placeholder-without-background")
     
     // MARK: - View Life Cycles
     override func viewDidLoad() {
@@ -23,7 +24,6 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
-        imageView.image = UIImage(named: "scribble-placeholder-without-background")
         guard let photo else { return }
         setImage(photo)
     }
@@ -42,9 +42,9 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    
     private func setImage(_ photo: Photo) {
         UIBlockingProgressHUD.show()
-        
         let cache = ImageCache.default
         cache.clearMemoryCache()
         cache.clearDiskCache()
@@ -57,7 +57,11 @@ final class SingleImageViewController: UIViewController {
             case .success:
                 self.rescaleAndCenterImageInScrollView()
             case .failure:
-                print("error")
+                print("Ошибка загрузки photo.largeImageURL")
+                guard let placeholder else { return }
+                self.imageView.image = placeholder
+                self.imageView.frame.size = placeholder.size
+                self.rescaleAndCenterImageInScrollView()
                 self.showError(photo)
             }
         }
