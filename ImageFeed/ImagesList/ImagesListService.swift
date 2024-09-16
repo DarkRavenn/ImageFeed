@@ -166,7 +166,7 @@ extension ImagesListService {
                 print(data)
                 
                 if let index = self?.photos.firstIndex(where: {$0.id == photoId}) {
-                    self?.photos[index].isLiked = isLike
+                    self?.photos[index].isLiked = !isLike
                     completion(.success(nil))
                 }
                 

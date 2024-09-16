@@ -136,7 +136,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
-        imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+        imageListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { result in
             switch result {
             case .success:
                 self.photos = self.imageListService.photos
