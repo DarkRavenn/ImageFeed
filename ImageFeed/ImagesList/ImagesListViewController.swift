@@ -102,27 +102,9 @@ extension ImagesListViewController {
         let photo = photos[indexPatch.row]
         guard let imageUrl = URL(string: photo.thumbImageURL) else { return }
         
-        let cache = ImageCache.default
-        cache.clearMemoryCache()
-        cache.clearDiskCache()
-        
-        cell.cellImage.kf.indicatorType = .activity
-        cell.cellImage.kf.setImage(with: imageUrl, placeholder: UIImage(named: "scribble-placeholder"))
-        
-        let gradientLayer = CAGradientLayer()
-        let gradientHeight = 30.0
-        let marginTopAndBottom = 8.0
-        gradientLayer.frame = CGRect(x: 0, y: cell.frame.height - gradientHeight - marginTopAndBottom, width: cell.cellImage.bounds.width, height: gradientHeight)
-        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
-        gradientLayer.locations = [0.0, 1.0]
-        cell.cellImage.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
-        cell.cellImage.layer.addSublayer(gradientLayer)
-        
-        cell.dateLabel.text = photo.createdAt != nil ? dataFormatter.string(from: photo.createdAt!) : ""
-        
-        let isLiked = photo.isLiked
-        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
-        cell.likeButton.setImage(likeImage, for: .normal)
+        cell.changeCellImage(imageUrl)
+        cell.changeDateLabel(photo.createdAt != nil ? dataFormatter.string(from: photo.createdAt!) : "")
+        cell.changeLikeButton(photo.isLiked)
     }
 }
 
@@ -159,11 +141,10 @@ extension ImagesListViewController: ImagesListCellDelegate {
             case .success:
                 self.photos = self.imageListService.photos
                 cell.setIsLiked(self.photos[indexPath.row].isLiked)
-                UIBlockingProgressHUD.dismiss()
             case .failure:
-                UIBlockingProgressHUD.dismiss()
                 self.showAlert(title: "Что-то пошло не так :(", message: "Попробуйте ещё раз позже")
             }
+            UIBlockingProgressHUD.dismiss()
         }
     }
 

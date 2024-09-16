@@ -15,9 +15,9 @@ protocol ImagesListCellDelegate: AnyObject {
 final class ImagesListCell: UITableViewCell {
     
     // MARK: - IB Outlets
-    @IBOutlet var cellImage: UIImageView!
-    @IBOutlet var likeButton: UIButton!
-    @IBOutlet var dateLabel: UILabel!
+    @IBOutlet private var cellImage: UIImageView!
+    @IBOutlet private var likeButton: UIButton!
+    @IBOutlet private var dateLabel: UILabel!
     
     // MARK: - Public Properties
     static let reuseIdentifier = "ImagesListCell"
@@ -34,7 +34,7 @@ final class ImagesListCell: UITableViewCell {
     }
     
     // MARK: - IB Actions
-    @IBAction func likeButtonTap(_ sender: Any) {
+    @IBAction private func likeButtonTap(_ sender: Any) {
         delegate?.imageListCellDidTapLike(self)
     }
     
@@ -43,5 +43,30 @@ final class ImagesListCell: UITableViewCell {
         likeButton.setImage(UIImage(named: isLiked ? "like_button_on" : "like_button_off"), for: .normal)
     }
     
-
+    func changeCellImage(_ imageUrl: URL) {
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
+        
+        cellImage.kf.indicatorType = .activity
+        cellImage.kf.setImage(with: imageUrl, placeholder: UIImage(named: "scribble-placeholder"))
+        
+        let gradientLayer = CAGradientLayer()
+        let gradientHeight = 30.0
+        let marginTopAndBottom = 8.0
+        gradientLayer.frame = CGRect(x: 0, y: frame.height - gradientHeight - marginTopAndBottom, width: cellImage.bounds.width, height: gradientHeight)
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        cellImage.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
+        cellImage.layer.addSublayer(gradientLayer)
+    }
+    
+    func changeLikeButton(_ isLiked: Bool) {
+        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+        likeButton.setImage(likeImage, for: .normal)
+    }
+    
+    func changeDateLabel(_ createdAt: String) {
+        dateLabel.text = createdAt
+    }
 }

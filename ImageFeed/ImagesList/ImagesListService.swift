@@ -128,13 +128,10 @@ extension ImagesListService {
     }
     
     private func addToPhotos(newPhotos: [PhotoResult]) {
-        let dateFormater = DateFormatter()
-        dateFormater.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        
         for photo in newPhotos {
             let newPhoto = Photo(id: photo.id,
                                  size: CGSize(width: photo.width, height: photo.height),
-                                 createdAt: dateFormater.date(from: photo.createdAt),
+                                 createdAt: Date().stringToDateAndFormatted(from: photo.createdAt),
                                  welcomeDescription: photo.description,
                                  thumbImageURL: photo.urls.thumb,
                                  largeImageURL: photo.urls.full,

@@ -29,10 +29,10 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - IB Actions
-    @IBAction func didTapBackButton(_ sender: Any) {
+    @IBAction private func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
-    @IBAction func didTapShareButton(_ sender: Any) {
+    @IBAction private func didTapShareButton(_ sender: Any) {
         guard let image = imageView.image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
