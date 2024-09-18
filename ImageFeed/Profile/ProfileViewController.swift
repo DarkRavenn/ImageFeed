@@ -22,6 +22,7 @@ final class ProfileViewController: UIViewController {
     
     private var profileDetails: Profile?
     private var profileService = ProfileService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     
     // MARK: - View Life Cycles    
     override func viewDidLoad() {
@@ -134,20 +135,25 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func didTapExitButton() {
-        nameLabel?.removeFromSuperview()
-        nameLabel = nil
+        let alertController = UIAlertController(title: "Пока, пока!",
+                                                message: "Уверены, что хотите выйти",
+                                                preferredStyle: .alert)
         
-        loginNameLabel?.removeFromSuperview()
-        loginNameLabel = nil
+        let logoutAction = UIAlertAction(title: "Да", style: .default) {_ in
+            self.profileLogoutService.logout()
+            
+            if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {
+                window.rootViewController = SplashViewController()
+            }
+        }
         
-        descriptionLabel?.removeFromSuperview()
-        descriptionLabel = nil
+        let cancelAction = UIAlertAction(title: "Нет", style: .default, handler: nil)
         
-        let profileImage = UIImage(named: "placeholder")
-        avatarImageView?.image = profileImage
+        alertController.addAction(logoutAction)
+        alertController.addAction(cancelAction)
+        alertController.preferredAction = cancelAction
         
-        KeychainWrapper.standard.removeObject(forKey: "accessToken")
-        
+        present(alertController, animated: true, completion: nil)
     }
     
     private func updateProfileDetails(profile: Profile?) {

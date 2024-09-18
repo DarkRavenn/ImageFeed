@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 enum AuthServiceError: Error {
     case invalidRequest
@@ -48,6 +49,7 @@ final class OAuth2Service {
             case .failure(let error): 
                 print("[urlSession.objectTask]: \(error)")
                 completion(.failure(error))
+                KeychainWrapper.standard.removeObject(forKey: "accessToken")
             }
             self?.task = nil
             self?.lastCode = nil

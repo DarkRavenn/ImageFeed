@@ -26,30 +26,7 @@ final class ProfileService {
     private let snakeCaseJSONDecoder = SnakeCaseJSONDecoder()
     private let tokenStorage = OAuth2TokenStorage()
     
-    // MARK: - Private Methods
-    private func makeMeRequest() -> URLRequest? {
-        guard 
-            let baseURL = Constants.defaultBaseApiURL,
-            let token = tokenStorage.token
-        else {
-            print("ProfileService.swift [35] Constants.defaultBaseApiURL = nil or tokenStorage.token")
-            return nil
-        }
-        
-        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
-        components?.path = UnsplashApiPath.me
-        
-        guard let url = components?.url else {
-            print("ProfileService.swift [52] url = components?.url = nil")
-            return nil
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
-    }    
-    
+    // MARK: - Public Methods
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard isActiveProfileRequests == false else {
@@ -78,7 +55,7 @@ final class ProfileService {
                                       bio: data.bio ?? "")
                 self?.profile = profile
                 completion(.success(profile))
-            case .failure(let error): 
+            case .failure(let error):
                 print("[urlSession.objectTask]: \(error)")
                 completion(.failure(error))
             }
@@ -87,5 +64,33 @@ final class ProfileService {
         }
         self.task = task
         task.resume()
+    }
+    
+    func cleanProfile() {
+        profile = nil
+    }
+    
+    // MARK: - Private Methods
+    private func makeMeRequest() -> URLRequest? {
+        guard 
+            let baseURL = Constants.defaultBaseApiURL,
+            let token = tokenStorage.token
+        else {
+            print("ProfileService.swift [35] Constants.defaultBaseApiURL = nil or tokenStorage.token")
+            return nil
+        }
+        
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
+        components?.path = UnsplashApiPath.me
+        
+        guard let url = components?.url else {
+            print("ProfileService.swift [52] url = components?.url = nil")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
     }
 }
