@@ -72,8 +72,8 @@ final class ProfileService {
     
     // MARK: - Private Methods
     private func makeMeRequest() -> URLRequest? {
-        guard 
-            let baseURL = Constants.defaultBaseApiURL,
+        let baseURL = Constants.defaultBaseURL
+        guard
             let token = tokenStorage.token
         else {
             print("ProfileService.swift [35] Constants.defaultBaseApiURL = nil or tokenStorage.token")

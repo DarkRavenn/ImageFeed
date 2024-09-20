@@ -64,8 +64,8 @@ final class ImagesListService {
 // MARK: - Extansion
 extension ImagesListService {
     private func makeMeRequest(page: Int) -> URLRequest? {
+        let baseURL = Constants.defaultBaseURL
         guard
-            let baseURL = Constants.defaultBaseApiURL,
             let token = tokenStorage.token
         else {
             print("ProfileService.swift [35] Constants.defaultBaseApiURL = nil or tokenStorage.token")
@@ -182,8 +182,8 @@ extension ImagesListService {
     }
     
     private func makeLikeRequest(_ photoId: String, _ isLike: Bool) -> URLRequest? {
+        let baseURL = Constants.defaultBaseURL
         guard
-            let baseURL = Constants.defaultBaseApiURL,
             let token = tokenStorage.token
         else {
             print("ImagesListService [142] Constants.defaultBaseApiURL = nil or tokenStorage.token")

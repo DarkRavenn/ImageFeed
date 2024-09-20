@@ -71,8 +71,8 @@ final class ProfileImageService {
     
     // MARK: - Private Methods
     private func makeUsersRequest() -> URLRequest? {
+        let baseURL = Constants.defaultBaseURL
         guard
-            let baseURL = Constants.defaultBaseApiURL,
             let token = tokenStorage.token,
             let userName = profileService.profile?.username
         else {
