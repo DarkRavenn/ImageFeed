@@ -57,7 +57,7 @@ final class ProfileViewController: UIViewController & ProfileViewViewControllerP
     private var exitButton: UIButton  = {
         let exitButton = UIButton(type: .custom)
         exitButton.setImage(UIImage(named: "Exit_button"), for: .normal)
-        exitButton.addTarget(ProfileViewController.self, action: #selector(exitButtonTapped), for: .touchUpInside)
+        exitButton.addTarget(self, action: #selector(exitButtonTapped), for: .touchUpInside)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         return exitButton
     }()
@@ -140,7 +140,7 @@ final class ProfileViewController: UIViewController & ProfileViewViewControllerP
             exitButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         }
     
-    @objc private func exitButtonTapped() {
+    @objc func exitButtonTapped() {
         let alertController = UIAlertController(title: "Пока, пока!",
                                                 message: "Уверены, что хотите выйти",
                                                 preferredStyle: .alert)
