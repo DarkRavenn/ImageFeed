@@ -22,12 +22,10 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     private let profileLogoutService = ProfileLogoutService.shared
     
     func viewDidLoad() {
-        // Получаем данные пользователя
         guard let profileData = profileService.profile else {
             return
         }
         
-        // Рисуем интерфейс
         view?.addProfileImageView()
         view?.addUserNameLabel(profileData.name)
         view?.addUserIdLabel(profileData.loginName)

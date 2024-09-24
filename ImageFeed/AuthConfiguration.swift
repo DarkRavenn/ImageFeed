@@ -49,6 +49,15 @@ struct AuthConfiguration {
                                  defaultBaseURL: Constants.defaultBaseURL)
     }
     
+    static var imageFeed: AuthConfiguration {
+        return AuthConfiguration(accessKey: "4GL81kLaodobhpvBsNvQN6oHVx6Oo9q9pP7e7RWca-s",
+                                 secretKey: "A1JPsL4Kh-WN5PScMjrMlfpZ-5ODYtVb53idcQEKLXQ",
+                                 redirectURI: Constants.redirectURI,
+                                 accessScope: Constants.accessScope,
+                                 authURLString: Constants.unsplashAuthorizeURLString,
+                                 defaultBaseURL: Constants.defaultBaseURL)
+    }
+    
     static var unsplash24: AuthConfiguration {
         return AuthConfiguration(accessKey: "8B58LKmSw2rbXEVy_gLZUbp1NfgulpJxGo_Ubyxftc0",
                                  secretKey: "OB9Ur0oZ34WivwDEUsk3XyAskJPB98ePshqnMf9BDH0",

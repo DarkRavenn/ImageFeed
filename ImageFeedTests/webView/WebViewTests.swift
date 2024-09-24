@@ -22,7 +22,7 @@ final class ImageFeedTests: XCTestCase {
         _ = viewController.view
         
         //then
-        XCTAssertTrue(presenter.viewDidLoadCalled) //behaviour verification
+        XCTAssertTrue(presenter.viewDidLoadCalled) 
     }
     
     func testPresenterCallsLoadRequest() {
